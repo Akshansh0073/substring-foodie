@@ -17,8 +17,8 @@ public class ResourceNotFoundException extends RuntimeException {
         super("Resource not found");
     }
 
-    public ResourceNotFoundException(String userNotAvailable) {
-        super(userNotAvailable);
+    public ResourceNotFoundException(String notAvailable) {
+        super(notAvailable);
     }
 
     public ResourceNotFoundException(String resourceName, String fieldName, String value) {

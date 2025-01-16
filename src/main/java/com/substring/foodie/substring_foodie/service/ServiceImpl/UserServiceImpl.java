@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,6 +38,22 @@ public class UserServiceImpl implements UserService {
         User user = convertUserDtoToUser(userDto);
         User savedUser = userRepo.save(user);
         return convertUserToUserDto(savedUser);
+    }
+
+    @Override
+    public List<UserDto> saveUserList(List<UserDto> userDto) {
+
+        List<UserDto> collect = userDto.stream().map(user -> {
+            user.setId(UUID.randomUUID().toString());
+            return user;
+        }).toList();
+
+        List<User> collect1 = collect.stream().map(dto -> convertUserDtoToUser(dto)).
+                collect(Collectors.toList());
+
+        List<User> users = userRepo.saveAll(collect1);
+
+        return users.stream().map(user->convertUserToUserDto(user)).collect(Collectors.toList());
     }
 
     @Override

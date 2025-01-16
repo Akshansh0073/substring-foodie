@@ -30,6 +30,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<ErrorResponse>(messageOb, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(InvalidFilePathException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidFilePathException(InvalidFilePathException ex){
+        ErrorResponse messageOb = ErrorResponse.builder()
+                .message(ex.getMessage())
+                .status(HttpStatus.NOT_FOUND)
+                .build();
+        return new ResponseEntity<ErrorResponse>(messageOb, HttpStatus.NOT_FOUND);
+    }
+
 
     // Important to understand all exceptions with custom message
     @ExceptionHandler(MethodArgumentNotValidException.class)

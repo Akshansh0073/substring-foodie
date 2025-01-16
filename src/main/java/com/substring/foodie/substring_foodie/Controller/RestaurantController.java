@@ -1,22 +1,40 @@
 package com.substring.foodie.substring_foodie.Controller;
 
 import com.substring.foodie.substring_foodie.config.AppConstants;
+import com.substring.foodie.substring_foodie.dto.FileData;
 import com.substring.foodie.substring_foodie.dto.RestaurantDto;
+import com.substring.foodie.substring_foodie.service.FileService;
 import com.substring.foodie.substring_foodie.service.RestaurantService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/restaurants")
 public class RestaurantController {
+
+    @Value("${restaurant.file.path}")
+    private String bannerFolderPath;
+
+    private Logger logger = LoggerFactory.getLogger(RestaurantController.class);
 
     private final RestaurantService restaurantService;
 
@@ -28,6 +46,11 @@ public class RestaurantController {
     @PostMapping("/")
     public ResponseEntity<RestaurantDto> add(@Valid @RequestBody RestaurantDto restaurantDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(restaurantService.add(restaurantDto));
+    }
+
+    @PostMapping("/add-list/")
+    public ResponseEntity<List<RestaurantDto>> addList(@Valid @RequestBody List<RestaurantDto> restaurantDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(restaurantService.addList(restaurantDto));
     }
 
     @PutMapping("/{restaurantId}")
@@ -77,5 +100,37 @@ public class RestaurantController {
         Pageable pageable = PageRequest.of(page, size, sort);
         return ResponseEntity.ok(restaurantService.getOpenRestaurants(pageable));
     }
+
+    @PostMapping("/upload-banner/{restaurantId}")
+    public ResponseEntity<?> uploadBanner(
+            @PathVariable String restaurantId,
+            @RequestParam("banner") MultipartFile banner
+    ) throws IOException {
+
+        RestaurantDto restaurantDto = restaurantService.uploadBanner(banner, restaurantId);
+
+        return ResponseEntity.ok(restaurantDto);
+    }
+
+    @GetMapping("/{restaurantId}/banner")
+    public ResponseEntity<Resource> serveFile(@PathVariable String restaurantId) throws IOException {
+
+        RestaurantDto restaurantDto = restaurantService.get(restaurantId);
+
+        String fullPath = bannerFolderPath + restaurantDto.getBanner();
+
+        Path filePath = Paths.get(fullPath);
+
+        Resource resource = new UrlResource(filePath.toUri());
+
+        if (resource.exists()) {
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_PNG)
+                    .body(resource);
+        } else {
+            throw new FileNotFoundException("File not found: " + fullPath);
+        }
+    }
+
 
 }

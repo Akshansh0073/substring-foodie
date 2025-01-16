@@ -12,6 +12,8 @@ public interface UserService {
 
     UserDto saveUser(UserDto userDto);
 
+    List<UserDto> saveUserList(List<UserDto> userDto);
+
     UserDto updateUser(UserDto userDto, String userId);
 
     Page<UserDto> getAll(Pageable pageable);

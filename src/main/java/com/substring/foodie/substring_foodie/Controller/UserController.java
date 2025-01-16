@@ -33,6 +33,11 @@ public class UserController {
         return new ResponseEntity<UserDto>(userService.saveUser(userDto),HttpStatus.CREATED);
     }
 
+    @PostMapping("/add-list/")
+    public ResponseEntity<List<UserDto>> createList (@Valid @RequestBody List<UserDto> userDto) {
+        return new ResponseEntity<List<UserDto>>(userService.saveUserList(userDto),HttpStatus.CREATED);
+    }
+
     @GetMapping
     public ResponseEntity<Page<UserDto>> getAllUsers(
             @RequestParam(value="page", required = false, defaultValue = AppConstants.PAGE_NUMBER) int page,
