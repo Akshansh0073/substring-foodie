@@ -10,5 +10,4 @@ public class SubstringFoodieApplication {
 
 		SpringApplication.run(SubstringFoodieApplication.class, args);
 	}
-
 }

@@ -4,7 +4,8 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.logging.Logger;
 
-public class GenderValidator implements ConstraintValidator <ValidGender, String> {
+public class
+GenderValidator implements ConstraintValidator <ValidGender, String> {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
 

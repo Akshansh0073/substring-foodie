@@ -43,10 +43,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> saveUserList(List<UserDto> userDto) {
 
-        List<UserDto> collect = userDto.stream().map(user -> {
-            user.setId(UUID.randomUUID().toString());
-            return user;
-        }).toList();
+        List<UserDto> collect = userDto.stream().peek(user -> user.setId(UUID.randomUUID().toString())).toList();
 
         List<User> collect1 = collect.stream().map(dto -> convertUserDtoToUser(dto)).
                 collect(Collectors.toList());
@@ -77,14 +74,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getUserByName(String userName) {
-        List<User> userList = userRepo.findByName(userName);
+        List<User> userList = userRepo.findByName(userName)
+                .stream()
+                .findAny() // If you expect multiple users, you may choose findFirst() or another logic
+                .map(List::of) // Wrap in a List to keep method signature consistent
+                .orElseThrow(()->new ResourceNotFoundException("User","Name keyword",userName));
         return userList.stream().map(user -> convertUserToUserDto(user))
                 .collect(Collectors.toList());
     }
 
     @Override
     public UserDto getUserByEmail(String email) {
-        User user = userRepo.findByEmail(email);
+        User user = userRepo.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("User","email",email));
         return convertUserToUserDto(user);
     }
 

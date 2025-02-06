@@ -8,13 +8,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepo extends JpaRepository<User, String> {
 
-
     List<User> findByName(String userName);
 
-    User findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
     // :keyword -> Refers to the parameter passed dynamically at runtime.
     @Query("SELECT u FROM User u WHERE u.name LIKE %:keyword%")

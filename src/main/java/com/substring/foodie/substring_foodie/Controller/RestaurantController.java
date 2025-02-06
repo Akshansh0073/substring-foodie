@@ -108,8 +108,8 @@ public class RestaurantController {
     ) throws IOException {
 
         RestaurantDto restaurantDto = restaurantService.uploadBanner(banner, restaurantId);
-
         return ResponseEntity.ok(restaurantDto);
+
     }
 
     @GetMapping("/{restaurantId}/banner")

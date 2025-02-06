@@ -96,7 +96,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     public RestaurantDto get(String id) {
 
         Restaurant restaurant = restaurantRepo.findById(id).
-                orElseThrow(() -> new ResourceNotFoundException("Restaurant", "Restauarant_Id", id));
+                orElseThrow(() -> new ResourceNotFoundException("Restaurant", "restauarant_Id", id));
         return modelMapper.map(restaurant,RestaurantDto.class);
 
     }

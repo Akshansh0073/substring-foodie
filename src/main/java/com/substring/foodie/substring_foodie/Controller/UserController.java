@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/api/v1/users")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
     Logger logger = LoggerFactory.getLogger(UserController.class);
 
     public UserController(UserService userService) {
@@ -88,12 +88,9 @@ public class UserController {
     )
     {
         Sort sort  = sortDir.equalsIgnoreCase("asc")?
-                    Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+                Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
         Pageable pageable = PageRequest.of(page,size,sort);
         return ResponseEntity.ok(userService.searchUserName(keyword, pageable));
     }
-
-
-
 }
